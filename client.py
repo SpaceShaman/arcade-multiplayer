@@ -3,6 +3,7 @@ import socket
 
 client_socket = None
 ADDRESS = (SERVER_IP, SERVER_PORT)
+
 class ClientGame(Game, arcade.Window):
     """ Extended game class for client """
     def __init__(self, width: int, height: int, title: str):
@@ -12,13 +13,17 @@ class ClientGame(Game, arcade.Window):
         """ Send information about pressed button to the server and update players data recived from server """
         # if input is pressed convert inputs to string and send them to the server
         data = ''
-        for input, value in client_input:
+        for input, value in client_input.items():
             if value == 1:
-                for input, value in client_input:
+                for input, value in client_input.items():
                     data += f'{value};'
-                data = data[:-1]
+                data = data[:-1].encode()
                 client_socket.sendto(data, ADDRESS)
                 break
+
+    def on_draw(self):
+        """ for test """
+        arcade.start_render()
 
 def main():
     """ Main function """
