@@ -1,9 +1,4 @@
-from threading import Timer
+import arcade
 
-
-def server_update():
-    """ Game logic working on server like game physics or player move """
-    Timer(1, server_update).start()
-    print('aa')
-
-server_update()
+w = arcade.Window()
+arcade.run()
