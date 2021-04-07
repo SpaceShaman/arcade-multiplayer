@@ -1,6 +1,7 @@
 import arcade
-from threading import Timer
-
+###########
+# SETTING #
+###########
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 65000
 WINDOW_WIDTH = 1280
@@ -21,8 +22,8 @@ server_output = {
     'x': 0,
     'y': 0
 }
-# player list in dictionary, 
-# key = client address, 
+# player list in dictionary
+# key = client address
 # value = for the server it will be client_input data, for the client it will be server_output data
 player_list = {}
 
