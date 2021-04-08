@@ -9,7 +9,7 @@ WINDOW_HEIGHT = 720
 TITLE = 'Multiplayer game'
 PLAYER_MOVE_SPEED = 5
 
-# dictionary of client input status with will be send to the server by UDP,
+# dictionary of client input status with will be send to the server with UDP protocol,
 # if you wont send more data to the server you need add more element to dictionary below
 client_input = {
     'left': 0,
@@ -17,12 +17,12 @@ client_input = {
     'top': 0,
     'bottom': 0,
 }
-# dictionary of server output data that will be assigned to each player and send to all client by UDP
+# dictionary of server output data that will be assigned to each player and send to all client with UDP protocol
 server_output = {
     'x': 0,
     'y': 0
 }
-# dictionary of player stats that will be assigned to each player and send to all client by TCP
+# dictionary of player stats that will be assigned to each player and send to all client with TCP protocol
 player_stats = {
     'kill': 0,
     'death': 0
