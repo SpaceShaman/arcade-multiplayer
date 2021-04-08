@@ -48,6 +48,15 @@ def UDPSend():
         # send encode data to the server with UDP
         udp_socket.sendto(data, ADDRESS)
 
+class ClientGame(Game):
+    """ Extended game class for client """
+    def __init__(self, width: int, height: int, title: str):
+        arcade.Window.__init__(self, width=width, height=height, title=title)
+
+    def update(self, delta_time: float):
+        """ override a method inherited from the parent class """
+        pass
+
 def main():
     """ Main client function """
     global tcp_socket
@@ -72,3 +81,7 @@ def main():
     udp_sender = RepeatTimer(SENDING_SPEED, UDPSend)
     # start sending data with UDP protocol
     udp_sender.start()
+    # create arcade window
+    window = ClientGame(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
+    # run the arcade loop of the game
+    arcade.run()
