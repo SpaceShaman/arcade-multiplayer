@@ -1,7 +1,7 @@
 import arcade
-###########
-# SETTING #
-###########
+############
+# SETTINGS #
+############
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 65000
 WINDOW_WIDTH = 1280
@@ -22,16 +22,32 @@ server_output = {
     'x': 0,
     'y': 0
 }
-# player list in dictionary
-# key = client address
-# value = for the server it will be client_input data, for the client it will be server_output data
-player_list = {}
+# player list
+player_list = []
+
+class Player():
+    """ Player class to create an object for each client """
+    def __init__(self):
+        # assign client input and server output to player
+        self.client_input = client_input
+        self.server_output = server_output
+        self.address = None
+
+    def draw(self):
+        """ Draw player """
+        arcade.draw_rectangle_filled(
+            center_x = self.server_output['x'],
+            center_y = self.server_output['y'],
+            width = 20,
+            height = 20,
+            color = arcade.csscolor.WHITE
+        )
 
 class Game():
     """ Main game class """
 
     def on_key_press(self, symbol: int, modifiers: int):
-        """ If player press kay change client input status """
+        """ If client press kay change client input status """
         if symbol == arcade.key.A:
             client_input['left'] = 1
         if symbol == arcade.key.D:
@@ -42,7 +58,7 @@ class Game():
             client_input['bottom'] = 1
 
     def on_key_release(self, symbol: int, modifiers: int):
-        """ If player release kay change client input status """
+        """ If client release kay change client input status """
         if symbol == arcade.key.A:
             client_input['left'] = 0
         if symbol == arcade.key.D:
@@ -54,24 +70,19 @@ class Game():
 
     def update(self, delta_time: float):
         """ Game logic working on server like game physics or player move """
-        if client_input['left'] == 1:
-            server_output['x'] -= PLAYER_MOVE_SPEED
-        if client_input['right'] == 1:
-            server_output['x'] += PLAYER_MOVE_SPEED
-        if client_input['top'] == 1:
-            server_output['y'] += PLAYER_MOVE_SPEED
-        if client_input['bottom'] == 1:
-            server_output['y'] -= PLAYER_MOVE_SPEED
+        for player in player_list:
+            if player.client_input['left'] == 1:
+                player.server_output['x'] -= PLAYER_MOVE_SPEED
+            if player.client_input['right'] == 1:
+                player.server_output['x'] += PLAYER_MOVE_SPEED
+            if player.client_input['top'] == 1:
+                player.server_output['y'] += PLAYER_MOVE_SPEED
+            if player.client_input['bottom'] == 1:
+                player.server_output['y'] -= PLAYER_MOVE_SPEED
 
     def on_draw(self):
         """ Draw everything on client screen """
         arcade.start_render()
-        # draw all players
-        for _address, _server_output in player_list:
-            arcade.draw_rectangle_filled(
-                center_x = _server_output['x'],
-                center_y = _server_output['y'],
-                width = 20,
-                height = 20,
-                color = arcade.csscolor.WHITE
-            )
+        # draw all players connected to the server
+        for player in player_list:
+            player.draw()

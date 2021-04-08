@@ -21,10 +21,6 @@ class ClientGame(Game, arcade.Window):
                 client_socket.sendto(data, ADDRESS)
                 break
 
-    def on_draw(self):
-        """ for test """
-        arcade.start_render()
-
 def main():
     """ Main function """
     global client_socket
