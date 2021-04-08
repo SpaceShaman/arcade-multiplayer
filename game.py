@@ -4,6 +4,7 @@ import arcade
 ############
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 65000
+
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 TITLE = 'Multiplayer game'
