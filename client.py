@@ -1,11 +1,20 @@
 from game import *
 import socket
 from threading import Thread, Timer
+
 BUFSIZE = 1024
+# speed which the client sends data to the server using UDP
+SENDING_SPEED = .1
 ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
 tcp_socket = None
 udp_socket = None
+
+class RepeatTimer(Timer):
+    """ Run the given function every given time """
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
 
 class TCPReciv(Thread):
     """ Create new thread for reciving data with TCP from server (player_stats and chat massage) """
@@ -28,10 +37,16 @@ class UDPRecive(Thread):
             data, address = udp_socket.recvfrom(BUFSIZE)
             data = data.decode('utf-8')
 
-class UDPSend(Timer):
-    """ Create new thread for sending data with UDP to server (client_input pressed button) """
-    def __init__(self, interval: float, function: Callable[..., Any], args: Optional[Iterable[Any]], kwargs: Optional[Mapping[str, Any]]) -> None:
-        super().__init__(interval, function, args=args, kwargs=kwargs)
+def UDPSend():
+    # if any value in client_input equals 1 send client_input to the server
+    if 1 in client_input.values():
+        # turn client_input into string and encode it
+        data = ''
+        for values in client_input.values():
+            data += str(values) + ';'
+        data = data[:-1].encode()
+        # send encode data to the server with UDP
+        udp_socket.sendto(data, ADDRESS)
 
 def main():
     """ Main client function """
@@ -53,7 +68,7 @@ def main():
     udp_reciver = UDPRecive()
     # start reciving data with UDP protocol
     udp_reciver.start()
-    # create new thread for sending data with UDP protocol to server
-    udp_sender = UDPSend()
+    # create new thread for sending data with UDP protocol to server every given time
+    udp_sender = RepeatTimer(SENDING_SPEED, UDPSend)
     # start sending data with UDP protocol
     udp_sender.start()
