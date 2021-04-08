@@ -9,7 +9,7 @@ WINDOW_HEIGHT = 720
 TITLE = 'Multiplayer game'
 PLAYER_MOVE_SPEED = 5
 
-# dictionary of client input status with will be send to the server,
+# dictionary of client input status with will be send to the server by UDP,
 # if you wont send more data to the server you need add more element to dictionary below
 client_input = {
     'left': 0,
@@ -17,13 +17,18 @@ client_input = {
     'top': 0,
     'bottom': 0,
 }
-# dictionary of server output data that will be assigned to each player and send to all client
+# dictionary of server output data that will be assigned to each player and send to all client by UDP
 server_output = {
     'x': 0,
     'y': 0
 }
-# player list
-player_list = []
+# dictionary of player stats that will be assigned to each player and send to all client by TCP
+player_stats = {
+    'kill': 0,
+    'death': 0
+}
+# list of all player connected to the server
+players_list = []
 
 class Player():
     """ Player class to create an object for each client """
@@ -31,6 +36,7 @@ class Player():
         # assign client input and server output to player
         self.client_input = client_input
         self.server_output = server_output
+        self.player_stats = player_stats
         self.address = None
 
     def draw(self):
@@ -70,7 +76,7 @@ class Game():
 
     def update(self, delta_time: float):
         """ Game logic working on server like game physics or player move """
-        for player in player_list:
+        for player in players_list:
             if player.client_input['left'] == 1:
                 player.server_output['x'] -= PLAYER_MOVE_SPEED
             if player.client_input['right'] == 1:
@@ -84,5 +90,5 @@ class Game():
         """ Draw everything on client screen """
         arcade.start_render()
         # draw all players connected to the server
-        for player in player_list:
+        for player in players_list:
             player.draw()
