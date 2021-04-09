@@ -4,8 +4,8 @@ import arcade
 ############
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 65000
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+WINDOW_WIDTH = 200
+WINDOW_HEIGHT = 200
 TITLE = 'Multiplayer game'
 PLAYER_MOVE_SPEED = 5
 
@@ -51,6 +51,9 @@ class Player():
 
 class Game():
     """ Main game class """
+    def __init__(self):
+        """ Here you can initialize variables that will be used on the server like PhysicsEngineSimple """
+        pass
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ If client press kay change client input status """

@@ -13,7 +13,8 @@ udp_socket = None
 class ClientGame(Game, arcade.Window):
     """ Extended game class for client to open window """
     def __init__(self, width: int = WINDOW_WIDTH, height: int = WINDOW_HEIGHT, title: str = TITLE):
-        super().__init__(width=width, height=height, title=title)
+        arcade.Window.__init__(self, width=width, height=height, title=title)
+        Game.__init__(self)
 
 class TCPReciv(Thread):
     """ Create new thread for reciving data with TCP from server (player_stats and chat massage) """

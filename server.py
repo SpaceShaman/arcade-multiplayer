@@ -49,7 +49,7 @@ class UDPRecive(Thread):
                         player.client_input[key] = data[count]
                         count += 1
                 # print recived data
-                print(f'{player.address[0]}:{player.address[1]} {player.client_input}')
+                print(f'Recive {player.address[0]}:{player.address[1]} {player.client_input}')
                 break
 
 def UDPSend():
