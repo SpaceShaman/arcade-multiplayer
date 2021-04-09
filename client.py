@@ -11,7 +11,7 @@ tcp_socket = None
 udp_socket = None
 
 class ClientGame(Game, arcade.Window):
-    """ Extended game class for client """
+    """ Extended game class for client to open window """
     def __init__(self, width: int = WINDOW_WIDTH, height: int = WINDOW_HEIGHT, title: str = TITLE):
         super().__init__(width=width, height=height, title=title)
 
@@ -44,7 +44,6 @@ def UDPSend(delta_time):
         for values in client_input.values():
             data += str(values) + ';'
         data = data[:-1].encode()
-        print(f'{data}')
         # send encode data to the server with UDP
         udp_socket.sendto(data, ADDRESS)
 

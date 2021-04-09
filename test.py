@@ -1,15 +1,11 @@
 """ Test without server """
 from game import *
-
-class Player(Player):
-    def __init__(self):
-        super().__init__()
 class ClientGame(Game, arcade.Window):
     """ Extended game class for test """
     def __init__(self, width: int, height: int, title: str):
         arcade.Window.__init__(self, width=width, height=height, title=title)
         # create player object for me
-        self.me = Player()
+        self.me = Player('test')
         # add me to the player list
         players_list.append(self.me)
 
@@ -34,6 +30,9 @@ class ClientGame(Game, arcade.Window):
             self.me.client_input['top'] = 0
         if symbol == arcade.key.S:
             self.me.client_input['bottom'] = 0
+
+    def on_update(self, delta_time: float):
+        self.server_update()
 
 window = ClientGame(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
 arcade.run()
