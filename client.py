@@ -4,17 +4,11 @@ from threading import Thread, Timer
 
 BUFSIZE = 1024
 # speed which the client sends data to the server using UDP
-SENDING_SPEED = .1
+SENDING_SPEED = 1/60
 ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
 tcp_socket = None
 udp_socket = None
-
-class RepeatTimer(Timer):
-    """ Run the given function every given time """
-    def run(self):
-        while not self.finished.wait(self.interval):
-            self.function(*self.args, **self.kwargs)
 
 class TCPReciv(Thread):
     """ Create new thread for reciving data with TCP from server (player_stats and chat massage) """
@@ -48,15 +42,6 @@ def UDPSend():
         # send encode data to the server with UDP
         udp_socket.sendto(data, ADDRESS)
 
-class ClientGame(Game):
-    """ Extended game class for client """
-    def __init__(self, width: int, height: int, title: str):
-        arcade.Window.__init__(self, width=width, height=height, title=title)
-
-    def update(self, delta_time: float):
-        """ override a method inherited from the parent class """
-        pass
-
 def main():
     """ Main client function """
     global tcp_socket
@@ -77,11 +62,9 @@ def main():
     udp_reciver = UDPRecive()
     # start reciving data with UDP protocol
     udp_reciver.start()
-    # create new thread for sending data with UDP protocol to server every given time
-    udp_sender = RepeatTimer(SENDING_SPEED, UDPSend)
-    # start sending data with UDP protocol
-    udp_sender.start()
+    # run UDPSend every given time
+    udp_sender = arcade.schedule(UDPSend, SENDING_SPEED)
     # create arcade window
-    window = ClientGame(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
+    window = Game(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
     # run the arcade loop of the game
     arcade.run()
