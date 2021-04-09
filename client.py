@@ -1,6 +1,6 @@
 from game import *
 import socket
-from threading import Thread, Timer
+from threading import Thread
 
 BUFSIZE = 1024
 # speed which the client sends data to the server using UDP
@@ -9,6 +9,11 @@ ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
 tcp_socket = None
 udp_socket = None
+
+class ClientGame(Game, arcade.Window):
+    """ Extended game class for client """
+    def __init__(self, width: int = WINDOW_WIDTH, height: int = WINDOW_HEIGHT, title: str = TITLE):
+        super().__init__(width=width, height=height, title=title)
 
 class TCPReciv(Thread):
     """ Create new thread for reciving data with TCP from server (player_stats and chat massage) """
@@ -31,14 +36,15 @@ class UDPRecive(Thread):
             data, address = udp_socket.recvfrom(BUFSIZE)
             data = data.decode('utf-8')
 
-def UDPSend():
-    # if any value in client_input equals 1 send client_input to the server
+def UDPSend(delta_time):
+    # if any value in client_input is equals 1 send client_input to the server
     if 1 in client_input.values():
         # turn client_input into string and encode it
         data = ''
         for values in client_input.values():
             data += str(values) + ';'
         data = data[:-1].encode()
+        print(f'{data}')
         # send encode data to the server with UDP
         udp_socket.sendto(data, ADDRESS)
 
@@ -56,7 +62,7 @@ def main():
     tcp_reciver.start()
     # create UDP socket
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # assign your address from tcp_socket to udp_socket
+    # bind your address from tcp_socket to udp_socket
     udp_socket.bind(tcp_socket.getsockname())
     # create new thread for reciving data with UDP protocol from server
     udp_reciver = UDPRecive()
@@ -65,6 +71,9 @@ def main():
     # run UDPSend every given time
     udp_sender = arcade.schedule(UDPSend, SENDING_SPEED)
     # create arcade window
-    window = Game(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
+    window = ClientGame()
     # run the arcade loop of the game
     arcade.run()
+
+if __name__ == '__main__':
+    main()

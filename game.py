@@ -32,12 +32,12 @@ players_list = []
 
 class Player():
     """ Player class to create an object for each client """
-    def __init__(self):
+    def __init__(self, address):
         # assign client input and server output to player
         self.client_input = client_input
         self.server_output = server_output
         self.player_stats = player_stats
-        self.address = None
+        self.address = address
 
     def draw(self):
         """ Draw player """
@@ -49,10 +49,8 @@ class Player():
             color = arcade.csscolor.WHITE
         )
 
-class Game(arcade.Window):
+class Game():
     """ Main game class """
-    def __init__(self, width: int, height: int, title: str):
-        super().__init__(width=width, height=height, title=title)
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ If client press kay change client input status """
@@ -76,7 +74,7 @@ class Game(arcade.Window):
         if symbol == arcade.key.S:
             client_input['bottom'] = 0
 
-    def server_update(self, delta_time: float):
+    def server_update(self):
         """ Game logic working on server like game physics or player move """
         for player in players_list:
             if player.client_input['left'] == 1:
