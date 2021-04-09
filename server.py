@@ -1,3 +1,4 @@
+from pyglet.gl.glext_arb import GL_MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS
 from game import *
 import socket
 from threading import Thread
@@ -10,26 +11,27 @@ ADDRESS = (SERVER_IP, SERVER_PORT)
 tcp_socket = None
 udp_socket = None
 
+class ServerPlayer(Player):
+    """ Extended player class for server with client_socket extra variable """
+    def __init__(self, address, client_socket):
+        super().__init__(address)
+        # client socket for player
+        self.client_socket = client_socket
+        # create new thread and start reciving data from client with TCP (chat massage)
+        self.tcp_reciver = TCPReciv(self.client_socket)
+        self.tcp_reciver.start()
+
 class TCPReciv(Thread):
     """ Create new thread for reciving data with TCP from client (chat massage) """
-    def __init__(self):
+    def __init__(self, client_socket):
         super().__init__()
+        self.client_socket = client_socket
 
     def run(self):
         while True:
             # recive data from client and decode them
-            data = tcp_socket.recv(BUFSIZE).decode('utf-8')
+            data = self.client_socket.recv(BUFSIZE).decode('utf-8')
 
-def UDPSend():
-    # if any value in client_input is equals 1 send client_input to the server
-    if 1 in client_input.values():
-        # turn client_input into string and encode it
-        data = ''
-        for values in client_input.values():
-            data += str(values) + ';'
-        data = data[:-1].encode()
-        # send encode data to the server with UDP
-        udp_socket.sendto(data, ADDRESS)
 class UDPRecive(Thread):
     """ Create new thread for reciving data with UDP from client (client_input with information witch button client press etc.) """
     def __init__(self):
@@ -48,12 +50,14 @@ class UDPRecive(Thread):
                     for key in player.client_input.keys():
                         player.client_input[key] = data[count]
                         count += 1
-                # print recived data
-                print(f'Recive {player.address[0]}:{player.address[1]} {player.client_input}')
-                break
+                    # print recived data
+                    print(f'Recive {player.address[0]}:{player.address[1]} {player.client_input}')
+                    break
 
 def UDPSend():
+    """ Send to all client connected to the server server_output for every each player """
     pass
+
 
 def main():
     """ Main client function """
@@ -85,7 +89,8 @@ def main():
         # print info about connected client
         print(f'{client_address[0]}:{client_address[1]} connect to the server')
         # create new player object for connected client and assign to him client address
-        player = Player(client_address)
+        # and socket for recive and send data via TCP
+        player = ServerPlayer(client_address, client_socket)
         players_list.append(player)
 
 if __name__ == '__main__':

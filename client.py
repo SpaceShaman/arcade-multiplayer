@@ -47,6 +47,7 @@ def UDPSend(delta_time):
         data = data[:-1].encode()
         # send encode data to the server with UDP
         udp_socket.sendto(data, ADDRESS)
+        print(f'{data}')
 
 def main():
     """ Main client function """
