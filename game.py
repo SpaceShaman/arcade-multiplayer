@@ -1,4 +1,5 @@
 import arcade
+import copy
 ############
 # SETTINGS #
 ############
@@ -33,10 +34,10 @@ players_list = []
 class Player():
     """ Player class to create an object for each client """
     def __init__(self, address):
-        # assign client input and server output to player
-        self.client_input = client_input
-        self.server_output = server_output
-        self.player_stats = player_stats
+        # copy client input and server output to player
+        self.client_input = copy.copy(client_input)
+        self.server_output = copy.copy(server_output)
+        self.player_stats = copy.copy(player_stats)
         self.address = address
 
     def draw(self):

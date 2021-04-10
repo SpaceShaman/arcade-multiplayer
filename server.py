@@ -67,7 +67,7 @@ class UDPRecive(Thread):
                     for key in player.client_input.keys():
                         player.client_input[key] = int(data[count])
                         count += 1
-                    print(f'{player.address[0]}:{player.address[1]} {player.server_output}')
+                    print(f'{player.address[0]}:{player.address[1]} {player.client_input} {player.server_output}')
                     break
 
 def UDPSend(delata_time):
