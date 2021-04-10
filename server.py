@@ -79,7 +79,8 @@ def UDPSend(delata_time):
         for key in player.client_input.keys():
             player.client_input[key] = 0
         # add client address for this player to data
-        data += str(player.address) + ';'
+
+        data += player.address[0] + ';' + str(player.address[1]) + ';'
         # add all server_output value for this player to data
         for value in player.server_output.values():
             data += str(value) + ';'

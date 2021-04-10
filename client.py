@@ -31,11 +31,58 @@ class UDPRecive(Thread):
     def __init__(self):
         super().__init__()
 
+    # data += player.address[0] + ';' + str(player.address[1])
+    # # add all server_output value for this player to data
+    # for value in player.server_output.values():
+    #     data += str(value) + ';'
+    # # add extra ; to separate individual players
+    # data += ';'
+    # # encode data
+    # data = data[:-2].encode()
+
+    def update_player(self, player, data):
+        """ Update player server_output data """
+        count = 2
+        for key in player.server_output.keys():
+            player.server_output[key] = int(data[count])
+            count += 1
+
+    def create_player(self, data):
+        """ Create new player object if not exist """
+        # get player address from recived data
+        player_address = (data[0], int(data[1]))
+        # crate new player object
+        player = Player(player_address)
+        # add player to player_list
+        players_list.append(player)
+        # update player data
+        self.update_player(player, data)
+
     def run(self):
         while True:
             # recive data from server and decode them
             data, address = udp_socket.recvfrom(BUFSIZE)
             data = data.decode('utf-8')
+            # separate the players
+            players = data.split(';;')
+            for player_data in players:
+                # separate player date
+                player_data = player_data.split(';')
+                # get player address from recived data
+                player_address = (player_data[0], int(player_data[1]))
+                # if player exist in player_list uptade server_output, if no create new player object
+                player_exist = False
+                for _player in players_list:
+                    if _player.address == player_address:
+                        player_exist = True
+                        # update player object
+                        self.update_player(_player, player_data)
+                        break
+                if player_exist == False:
+                    # crate new player object
+                    self.create_player(player_data)
+                
+
             # print(data)
 
 def UDPSend(delta_time):
