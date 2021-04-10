@@ -77,7 +77,7 @@ class Game():
         if symbol == arcade.key.S:
             client_input['bottom'] = 0
 
-    def server_update(self):
+    def server_update(self, delta_time):
         """ Game logic working on server like game physics or player move """
         for player in players_list:
             if player.client_input['left'] == 1:

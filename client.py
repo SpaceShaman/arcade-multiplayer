@@ -36,6 +36,7 @@ class UDPRecive(Thread):
             # recive data from server and decode them
             data, address = udp_socket.recvfrom(BUFSIZE)
             data = data.decode('utf-8')
+            print(data)
 
 def UDPSend(delta_time):
     # if any value in client_input is equals 1 send client_input to the server
@@ -47,7 +48,6 @@ def UDPSend(delta_time):
         data = data[:-1].encode()
         # send encode data to the server with UDP
         udp_socket.sendto(data, ADDRESS)
-        print(f'{data}')
 
 def main():
     """ Main client function """
