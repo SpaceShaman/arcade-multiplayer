@@ -1,11 +1,11 @@
 from game import *
 import socket
 from threading import Thread
-import os
+import sys
 
 BUFSIZE = 1024
 # speed which the client sends data to the server using UDP
-SENDING_SPEED = 1/60
+SENDING_SPEED = 0.05
 ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
 tcp_socket = None
@@ -47,7 +47,16 @@ class TCPReciv(Thread):
     def run(self):
         while True:
             # recive data from client and decode them
-            data = self.client_socket.recv(BUFSIZE).decode('utf-8')
+            try:
+                data = self.client_socket.recv(BUFSIZE).decode('utf-8')
+            except socket.error as e:
+                # if the client disconnects from the server stop thread and delete player object 
+                client_address = self.client_socket.getpeername()
+                for player in players_list:
+                    if player.address == client_address:
+                        players_list.remove(player)
+                print (f'{client_address[0]}:{client_address[1]} disconect.')
+                sys.exit()
 
 class UDPRecive(Thread):
     """ Create new thread for reciving data with UDP from client (client_input with information witch button client press etc.) """
