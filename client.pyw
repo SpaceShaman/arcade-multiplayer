@@ -4,7 +4,7 @@ from threading import Thread
 import sys
 
 BUFSIZE = 1024
-# speed which the client sends data to the server using UDP
+# speed which the client sends data to the server via UDP
 SENDING_SPEED = 1/60
 ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
@@ -31,7 +31,6 @@ class TCPReciv(Thread):
                 data = tcp_socket.recv(BUFSIZE).decode('utf-8')
             except socket.error:
                 break
-        # print('TCP close')
 
 class UDPRecive(Thread):
     """ Create new thread for reciving data with UDP from server (server_output with player position and etc.) """
@@ -84,7 +83,6 @@ class UDPRecive(Thread):
                 if player_exist == False:
                     # crate new player object
                     self.create_player(player_data)
-        # print('UDP close')
 
 def UDPSend(delta_time):
     # if any value in client_input is equals 1 send client_input to the server
@@ -134,7 +132,6 @@ def main():
     print(f'tcp_reciver: {tcp_reciver.is_alive()}')
     print(f'udp_reciver: {udp_reciver.is_alive()}')
     sys.exit()
-    
 
 if __name__ == '__main__':
     main()
