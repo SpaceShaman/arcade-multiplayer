@@ -12,6 +12,14 @@ tcp_socket = None
 udp_socket = None
 
 work = True
+
+def remove_player(address):
+    """ Remove a player with the given address from player_list """
+    for player in players_list:
+        if player.address == address:
+            players_list.remove(player)
+            break
+
 class ClientGame(Game, arcade.Window):
     """ Extended game class for client to open window """
     def __init__(self, width: int = WINDOW_WIDTH, height: int = WINDOW_HEIGHT, title: str = TITLE):
@@ -29,6 +37,11 @@ class TCPReciv(Thread):
             # recive data from server and decode them
             try:
                 data = tcp_socket.recv(BUFSIZE).decode('utf-8')
+                data = data.split(';')
+                # if recived data is information about disconected player remove this player from player list
+                if data[0] == 'd':
+                    address = (data[1], int(data[2]))
+                    remove_player(address)
             except socket.error:
                 break
 

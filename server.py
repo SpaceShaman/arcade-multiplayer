@@ -18,8 +18,13 @@ def remove_player(client_socket):
     for player in players_list:
         if player.address == client_address:
             players_list.remove(player)
+            break
     client_socket.close()
+    # send to all clients info about disconected client
+    for player in players_list:
+        player.client_socket.sendall(f'd;{client_address[0]};{client_address[1]}'.encode())
     print (f'{client_address[0]}:{client_address[1]} disconect.')
+
 class ServerPlayer(Player):
     """ Extended player class for server with client_socket extra variable """
     def __init__(self, address, client_socket):
