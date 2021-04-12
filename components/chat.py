@@ -4,10 +4,6 @@ import arcade, arcade.gui
 CHAT_LIST_SIZE = 10
 
 window = None
-
-def send_message(message):
-    pass
-
 class ChatInputBox(arcade.gui.UIInputBox):
     """ Entry field for messages to be sent """
     def __init__(self, window):
@@ -53,7 +49,11 @@ class UIChat(arcade.gui.UIManager):
         if len(self.message_list) == CHAT_LIST_SIZE:
             self.message_list.pop(0)
         # add message to list
-        self.message_list.append(self.chat_input.text)
+        self.message_list.append(message)
+
+    def send_message(self, message):
+        """ Send message to the server """
+        self.store_message(message)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # if you press 'T' change visiblity of chat box
@@ -68,7 +68,7 @@ class UIChat(arcade.gui.UIManager):
         # send message if press enter and chat_input is no emty
         if self.chat_input.focused and self.chat_input.text != '':
             if symbol == arcade.key.ENTER:
-                send_message(self.chat_input.text)
+                self.send_message(self.chat_input.text)
                 self.chat_input.text = ''
 
     def on_draw(self):
@@ -83,22 +83,3 @@ class UIChat(arcade.gui.UIManager):
                 color = arcade.csscolor.WHITE,
             )
             pos_y -= 13
-
-class Game(arcade.View):
-    def __init__(self):
-        super().__init__()
-        self.ui_chat = UIChat(window)
-        
-    def update(self, delta_time: float):
-        pass
-    def on_draw(self):
-        arcade.start_render()
-
-def main():
-    global window
-    window = arcade.Window()
-    view = Game()
-    window.show_view(view)
-    arcade.run()
-if __name__ == '__main__':
-    main()

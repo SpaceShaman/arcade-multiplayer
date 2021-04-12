@@ -1,4 +1,5 @@
 from game import *
+from components.chat import *
 import socket
 from threading import Thread
 import sys
@@ -11,8 +12,26 @@ ADDRESS = (SERVER_IP, SERVER_PORT)
 tcp_socket = None
 udp_socket = None
 window = None
+game = None
 # stop threads if change the variable to false 
 work = True
+
+class Chat(UIChat):
+    """ Extend UIChat class for client to send message to the server """
+    def __init__(self, window):
+        super().__init__(window)
+
+    def send_message(self, message):
+        # send message to the server
+        tcp_socket.sendall(f'm;{message}'.encode())
+
+class ClientGame(Game, arcade.View):
+    """ Extended game class for client to open window """
+    def __init__(self):
+        arcade.View.__init__(self)
+        Game.__init__(self)
+        # create chat module from components/chat.py
+        self.chat = Chat(window)
 
 def remove_player(address):
     """ Remove a player with the given address from player_list """
@@ -20,12 +39,6 @@ def remove_player(address):
         if player.address == address:
             players_list.remove(player)
             break
-
-class ClientGame(Game, arcade.View):
-    """ Extended game class for client to open window """
-    def __init__(self):
-        arcade.View.__init__(self)
-        Game.__init__(self)
 
 class TCPReciv(Thread):
     """ Create new thread for reciving data with TCP from server (player_stats and chat massage) """
@@ -38,11 +51,14 @@ class TCPReciv(Thread):
             # recive data from server and decode them
             try:
                 data = tcp_socket.recv(BUFSIZE).decode('utf-8')
-                data = data.split(';')
+                data = data.split(';', 1)
                 # if recived data is information about disconected player remove this player from player list
                 if data[0] == 'd':
                     address = (data[1], int(data[2]))
                     remove_player(address)
+                # if recived data is chat message reived from server store them and print on the screen
+                elif data[0] == 'm':
+                    game.chat.store_message(data[1])
             except socket.error:
                 break
 
@@ -114,6 +130,7 @@ def main():
     global tcp_socket
     global udp_socket
     global window
+    global game
     # create TCP socket
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # connect to the server
@@ -134,8 +151,8 @@ def main():
     arcade.schedule(UDPSend, SENDING_SPEED)
     # create arcade window
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
-    view = ClientGame()
-    window.show_view(view)
+    game = ClientGame()
+    window.show_view(game)
     # run the arcade loop of the game
     arcade.run()
     # close program if arcade stops working

@@ -56,12 +56,21 @@ class TCPReciv(Thread):
     def __init__(self, client_socket):
         super().__init__()
         self.client_socket = client_socket
+        self.client_address = client_socket.getpeername()
 
     def run(self):
         while True:
             # recive data from client and decode them
             try:
                 data = self.client_socket.recv(BUFSIZE).decode('utf-8')
+                data = data.split(';', 1)
+                # if recived data is chat message reived from client resend them to all client connected to the server
+                if data[0] == 'm':
+                    msg = f'{self.client_address[0]}:{self.client_address[1]} {data[1]}'
+                    # send to all clients recived message
+                    for player in players_list:
+                        player.client_socket.sendall(f'm;{msg}'.encode())
+                    print(msg)
             except socket.error as e:
                 # if the client disconnects from the server stop thread and delete player object 
                 break
