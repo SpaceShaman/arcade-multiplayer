@@ -10,7 +10,8 @@ ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
 tcp_socket = None
 udp_socket = None
-
+window = None
+# stop threads if change the variable to false 
 work = True
 
 def remove_player(address):
@@ -20,10 +21,10 @@ def remove_player(address):
             players_list.remove(player)
             break
 
-class ClientGame(Game, arcade.Window):
+class ClientGame(Game, arcade.View):
     """ Extended game class for client to open window """
-    def __init__(self, width: int = WINDOW_WIDTH, height: int = WINDOW_HEIGHT, title: str = TITLE):
-        arcade.Window.__init__(self, width=width, height=height, title=title)
+    def __init__(self):
+        arcade.View.__init__(self)
         Game.__init__(self)
 
 class TCPReciv(Thread):
@@ -112,6 +113,7 @@ def main():
     """ Main client function """
     global tcp_socket
     global udp_socket
+    global window
     # create TCP socket
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # connect to the server
@@ -131,7 +133,9 @@ def main():
     # run UDPSend every given time
     arcade.schedule(UDPSend, SENDING_SPEED)
     # create arcade window
-    window = ClientGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE)
+    view = ClientGame()
+    window.show_view(view)
     # run the arcade loop of the game
     arcade.run()
     # close program if arcade stops working

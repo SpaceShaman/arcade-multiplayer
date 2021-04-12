@@ -4,9 +4,9 @@ from threading import Thread
 import sys
 
 BUFSIZE = 1024
+ADDRESS = (SERVER_IP, SERVER_PORT)
 # speed which the server sends data to the client via UDP
 SENDING_SPEED = 0.05
-ADDRESS = (SERVER_IP, SERVER_PORT)
 # initialize global variables
 tcp_socket = None
 udp_socket = None
