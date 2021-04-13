@@ -51,14 +51,15 @@ class TCPReciv(Thread):
             # recive data from server and decode them
             try:
                 data = tcp_socket.recv(BUFSIZE).decode('utf-8')
-                data = data.split(';', 1)
+                data = data.split(';')
                 # if recived data is information about disconected player remove this player from player list
                 if data[0] == 'd':
                     address = (data[1], int(data[2]))
                     remove_player(address)
+                    game.chat.store_message(f'{data[1]}:{data[2]} disconect.')
                 # if recived data is chat message reived from server store them and print on the screen
                 elif data[0] == 'm':
-                    game.chat.store_message(data[1])
+                    game.chat.store_message(';'.join(data[1:]))
             except socket.error:
                 break
 

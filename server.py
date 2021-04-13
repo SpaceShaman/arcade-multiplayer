@@ -46,6 +46,9 @@ class TCPConnect(Thread):
             client_socket, client_address = tcp_socket.accept()
             # print info about connected client
             print(f'{client_address[0]}:{client_address[1]} connect to the server')
+            # send to all clients message with info about connected client
+            for player in players_list:
+                player.client_socket.sendall(f'm;{client_address[0]}:{client_address[1]} connect to the server'.encode())
             # create new player object for connected client and assign to him client address
             # and socket for recive and send data via TCP
             player = ServerPlayer(client_address, client_socket)
