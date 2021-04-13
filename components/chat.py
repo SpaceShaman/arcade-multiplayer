@@ -55,21 +55,31 @@ class UIChat(arcade.gui.UIManager):
         """ Send message to the server """
         self.store_message(message)
 
-    def on_key_press(self, symbol: int, modifiers: int):
-        # if you press 'T' change visiblity of chat box
-        if not self.chat_input.focused:
-            if symbol == arcade.key.T:
-                # if chat_input is invisible make it visible
-                if self.chat_input.alpha == 0:
-                    self.chat_input.alpha = 255
-                # if chat_input is visible make it invisible
-                elif self.chat_input.alpha == 255:
-                    self.chat_input.alpha = 0
+    def on_key_release(self, symbol: int, modifiers: int):
+        # if you press 'T' change visiblity chat box
+        if symbol == arcade.key.T and not self.chat_input.focused:
+            # make chat_input focused
+            self.chat_input.text = ''
+            self.focused_element = self.chat_input
         # send message if press enter and chat_input is no emty
-        if self.chat_input.focused and self.chat_input.text != '':
-            if symbol == arcade.key.ENTER:
+        if self.chat_input.focused and symbol == arcade.key.ENTER:
+            if self.chat_input.text != '':
                 self.send_message(self.chat_input.text)
                 self.chat_input.text = ''
+                # unfocus chat_input
+                self.focused_element = None
+            # unfocus chat_input if you press ENTER end chat_input.text is empty
+            elif self.chat_input.text == '':
+                self.focused_element = None
+
+    def on_update(self, dt):
+        super().on_update(dt)
+        # if chat_input is not focused make it invisible
+        if not self.chat_input.focused:
+            self.chat_input.alpha = 0
+        # if chat_input is focused make it visible
+        if self.chat_input.focused:
+            self.chat_input.alpha = 255
 
     def on_draw(self):
         super().on_draw()
