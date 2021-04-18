@@ -1,12 +1,14 @@
+"""
+To start the server you need to run this file. 
+"""
 from game import *
 import socket
 from threading import Thread
-import sys
 
 BUFSIZE = 1024
 ADDRESS = (SERVER_IP, SERVER_PORT)
 # speed which the server sends data to the client via UDP
-SENDING_SPEED = 0.05
+SENDING_SPEED = 1/60
 # initialize global variables
 tcp_socket = None
 udp_socket = None
@@ -67,7 +69,7 @@ class TCPReciv(Thread):
             try:
                 data = self.client_socket.recv(BUFSIZE).decode('utf-8')
                 data = data.split(';', 1)
-                # if recived data is chat message reived from client resend them to all client connected to the server
+                # if recived data is chat message reived from client, resend them to all client connected to the server
                 if data[0] == 'm':
                     msg = f'{self.client_address[0]}:{self.client_address[1]} {data[1]}'
                     # send to all clients recived message
@@ -109,7 +111,6 @@ def UDPSend(delata_time):
         for key in player.client_input.keys():
             player.client_input[key] = 0
         # add client address for this player to data
-
         data += player.address[0] + ';' + str(player.address[1]) + ';'
         # add all server_output value for this player to data
         for value in player.server_output.values():
@@ -123,7 +124,7 @@ def UDPSend(delata_time):
         udp_socket.sendto(data, player.address)
 
 def main():
-    """ Main client function """
+    """ Main server function """
     global tcp_socket
     global udp_socket
     global game

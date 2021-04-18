@@ -1,4 +1,4 @@
-import arcade, arcade.gui
+import arcade.gui
 
 # how many message will be store in chat_list and show on the screen
 CHAT_LIST_SIZE = 10

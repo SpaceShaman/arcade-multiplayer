@@ -1,4 +1,6 @@
-""" Test without server """
+"""
+You cen test your game without starting server using this file. 
+"""
 from game import *
 from components.chat import *
 

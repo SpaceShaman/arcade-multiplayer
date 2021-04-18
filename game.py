@@ -1,3 +1,24 @@
+"""
+Multiplayer-Arcade is a freamwork designed to make it easier for you to write multiplayer games so that
+you don't have to worry about all the difficult issues related to communication between players.
+With this framework you can write your own multiplayer game almost as easily as if you were writing
+a regular game in the Arcade library.
+
+Everything you need to write your own multiplayer game is in this file.
+
+To start the server you need run the server.py file.
+(you don't need to know how it works but of course it would be better if you knew how it works)
+
+The client.py file is used to start game and connect to the server, 
+if you want run it without console, you can change extension to .pyw
+
+    Author: Stanik
+    Email: stanik@tuta.io
+    GitHub: https://github.com/stanik120
+    License: GPL 3
+    Python Version: 3.9.1
+
+"""
 import arcade
 import copy
 ############
@@ -10,8 +31,8 @@ WINDOW_HEIGHT = 300
 TITLE = 'Multiplayer game'
 PLAYER_MOVE_SPEED = 5
 
-# dictionary of client input status with will be send to the server with UDP protocol,
-# if you wont send more data to the server you need add more element to dictionary below
+# dictionary of client input status witch will be send to the server with UDP protocol,
+# if you won't send more data to the server you need add more element to dictionary below
 client_input = {
     'left': 0,
     'right': 0,
@@ -24,6 +45,7 @@ server_output = {
     'y': 0
 }
 # dictionary of player stats that will be assigned to each player and send to all client with TCP protocol
+# (It's not working yet)
 player_stats = {
     'kill': 0,
     'death': 0

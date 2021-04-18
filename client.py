@@ -1,3 +1,8 @@
+"""
+This file is used to start game and connect to the server, 
+if you want to run it without console, you can change extension to .pyw
+"""
+
 from game import *
 from components.chat import *
 import socket
