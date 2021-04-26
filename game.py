@@ -76,13 +76,13 @@ class Player():
 
     def draw(self):
         """ Draw player """
-        arcade.draw_rectangle_filled(
-            center_x = self.server_output['x'],
-            center_y = self.server_output['y'],
-            width = 40,
-            height = 40,
-            color = arcade.csscolor.WHITE
-        )
+        # arcade.draw_rectangle_filled(
+        #     center_x = self.server_output['x'],
+        #     center_y = self.server_output['y'],
+        #     width = 40,
+        #     height = 40,
+        #     color = arcade.csscolor.WHITE
+        # )
         arcade.draw_rectangle_outline(
             center_x = self.interpolate_output['x'],
             center_y = self.interpolate_output['y'],

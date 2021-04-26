@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Extrapolation and interpolation of data received from the server using the UDP protocol in order to reduce latency, so that the server can send data to the client less frequently and the player's movement is still smooth.
+### Changed
+- Correct the extrapolation and interpolation code to make it more scalable.
+
 
 ## [0.1] - 2021-04-18
 ### Added
@@ -18,5 +21,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with the Arcade library
 
 [Unreleased]: https://github.com/stanik120/Multiplayer-Arcade/compare/v0.1...HEAD
-<!-- [0.0.2]: https://github.com/stanik120/Multiplayer-Arcade/compare/v0.0.1...v0.0.2 -->
+<!-- [0.0.2]: https://github.com/stanik120/Multiplayer-Arcade/compare/v0.1...v0.2 -->
 [0.1]: https://github.com/stanik120/Multiplayer-Arcade/releases/tag/v0.1
