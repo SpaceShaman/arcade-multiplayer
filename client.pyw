@@ -8,6 +8,7 @@ from components.chat import *
 import socket
 from threading import Thread
 import sys
+import time
 
 BUFSIZE = 1024
 # speed which the client sends data to the server via UDP
@@ -20,6 +21,16 @@ window = None
 game = None
 # stop threads if change the variable to false 
 work = True
+
+def extrapolation(x0, t0, x1, t1):
+    d_time = (t1 - t0)
+    velocity = (x1 - x0) / d_time
+    
+    # predicted_position = velocity * d_time + x1
+    now = game.time
+    x = velocity * (now - t1) + x0
+
+    return x
 
 class Chat(UIChat):
     """ Extend UIChat class for client to send message to the server """
@@ -37,6 +48,32 @@ class ClientGame(Game, arcade.View):
         Game.__init__(self)
         # create chat module from components/chat.py
         self.chat = Chat(window)
+        self.time = None
+
+    def update(self, delta_time):
+        # Game.update()
+        # update time
+        self.time = time.time()
+
+        # extrapolat and interpolat data recived from server to reduce letency
+        for player in players_list:
+            if len(player.server_output_buffer) == 2:
+                p0 = player.server_output_buffer[0]
+                server_output0 = p0[0]
+                x0 = server_output0['x']
+                y0 = server_output0['y']
+                t0 = p0[1]
+                p1 = player.server_output_buffer[1]
+                server_output1 = p1[0]
+                x1 = server_output1['x']
+                y1 = server_output1['y']
+                t1 = p1[1]
+
+                x = extrapolation(x0, t0, x1, t1)
+                y = extrapolation(y0, t0, y1, t1)
+
+                player.interpolate_output['x'] = x
+                player.interpolate_output['y'] = y
 
 def remove_player(address):
     """ Remove a player with the given address from player_list """
@@ -80,6 +117,12 @@ class UDPRecive(Thread):
         for key in player.server_output.keys():
             player.server_output[key] = int(data[count])
             count += 1
+
+        # update the buffer of the last two server_output data, it will be used to reduce latency
+        if len(player.server_output_buffer) == 2:
+            player.server_output_buffer.pop(0)
+        if not game == None:
+            player.server_output_buffer.append((copy.copy(player.server_output), game.time))
 
     def create_player(self, data):
         """ Create new player object if not exist """

@@ -21,13 +21,14 @@ if you want run it without console, you can change extension to .pyw
 """
 import arcade
 import copy
+import time
 ############
 # SETTINGS #
 ############
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 65000
-WINDOW_WIDTH = 500
-WINDOW_HEIGHT = 300
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
 TITLE = 'Multiplayer game'
 PLAYER_MOVE_SPEED = 5
 
@@ -40,9 +41,17 @@ client_input = {
     'bottom': 0,
 }
 # dictionary of server output data that will be assigned to each player and send to all client with UDP protocol
+# if you won't recive more data from server you need add more element to dictionary below
 server_output = {
-    'x': 0,
-    'y': 0
+    'x': 100,
+    'y': 100
+}
+# dictionary of server output that will be extrapolated and interpolated so as to reduce latency to the server 
+# and so that the server can send data to the client less frequently.
+# if you won't reduce letency of more data you need add more element to dictionary below (they must also be in the server_output dictionary)
+interpolate_output = {
+    'x': 100,
+    'y': 100
 }
 # dictionary of player stats that will be assigned to each player and send to all client with TCP protocol
 # (It's not working yet)
@@ -59,17 +68,28 @@ class Player():
         # copy client input and server output to player
         self.client_input = copy.copy(client_input)
         self.server_output = copy.copy(server_output)
+        self.interpolate_output = copy.copy(interpolate_output)
         self.player_stats = copy.copy(player_stats)
         self.address = address
+        # list of last two server output data will be use to make extrapolation of player position to make smooth move on client screen
+        self.server_output_buffer = []
 
     def draw(self):
         """ Draw player """
         arcade.draw_rectangle_filled(
             center_x = self.server_output['x'],
             center_y = self.server_output['y'],
-            width = 20,
-            height = 20,
+            width = 40,
+            height = 40,
             color = arcade.csscolor.WHITE
+        )
+        arcade.draw_rectangle_outline(
+            center_x = self.interpolate_output['x'],
+            center_y = self.interpolate_output['y'],
+            width = 40,
+            height = 40,
+            color = arcade.csscolor.GREEN,
+            border_width = 4
         )
 
 class Game():
@@ -112,6 +132,7 @@ class Game():
             if player.client_input['bottom'] == 1:
                 player.server_output['y'] -= PLAYER_MOVE_SPEED
 
+        
     def on_draw(self):
         """ Draw everything on client screen """
         arcade.start_render()
