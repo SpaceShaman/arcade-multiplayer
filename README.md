@@ -13,6 +13,8 @@ if you want run it without console, you can change extension to .pyw
 
 ![Multiplayer-Arcade](diagrams/m.gif)
 
+### [Changelog](CHANGELOG.md)
+
 #### What is already working:
 - sending client input status from client to server using UDP protocol
 - sending server output like the player's position using the UDP protocol
@@ -20,11 +22,11 @@ if you want run it without console, you can change extension to .pyw
 - Delete player object after client disconect on client and server side
 - Chat using TCP protocol
 - Integration with the Arcade library
+- Extrapolation and interpolation of data received from the server using the UDP protocol in order to reduce latency, so that the server can send data to the client less frequently and the player's movement is still smooth.
 
-#### What will be introduced in the next version:
+#### What will be introduced in the future:
 - Sending players stats using TCP protocol
 - Displaying players stats after pressing the TAB button
-- Player movement acceleration so that the server can send less data
 - Integration with PIP
 
 ### How the server works
